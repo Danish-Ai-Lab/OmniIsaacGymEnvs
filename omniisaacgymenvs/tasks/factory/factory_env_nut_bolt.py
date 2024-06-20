@@ -39,8 +39,8 @@ import numpy as np
 import torch
 
 from omni.isaac.core.prims import RigidPrimView, XFormPrim
-from omni.isaac.core.utils.nucleus import get_assets_root_path
 from omni.isaac.core.utils.stage import add_reference_to_stage
+from omni.isaac.nucleus import get_assets_root_path
 from omniisaacgymenvs.tasks.base.rl_task import RLTask
 from omni.physx.scripts import physicsUtils, utils
 
@@ -99,7 +99,7 @@ class FactoryEnvNutBolt(FactoryBase, FactoryABCEnv):
         """Import assets. Add to scene."""
 
         # Increase buffer size to prevent overflow for Place and Screw tasks
-        physxSceneAPI = self._env._world.get_physics_context()._physx_scene_api
+        physxSceneAPI = self.world.get_physics_context()._physx_scene_api
         physxSceneAPI.CreateGpuCollisionStackSizeAttr().Set(256 * 1024 * 1024)
 
         self.import_franka_assets(add_to_stage=True)

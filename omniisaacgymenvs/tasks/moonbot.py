@@ -10,7 +10,7 @@ from omniisaacgymenvs.tasks.base.rl_task import RLTask
 from omniisaacgymenvs.robots.articulations.moonbot import Moonbot
 
 
-class Moonbotsimple6Task(RLTask):
+class MoonbotTask(RLTask):
     def __init__(self, name, sim_config, env, offset=None) -> None:
 
         self.update_config(sim_config)

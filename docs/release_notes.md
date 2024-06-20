@@ -1,6 +1,68 @@
 Release Notes
 =============
 
+4.0.0 - May 31, 2024
+--------------------
+
+PLEASE NOTE: This will be the last release of OmniIsaacGymEnvs. Moving forward, OmniIsaacGymEnvs will be merging with IsaacLab (https://github.com/isaac-sim/IsaacLab). All future updates will be available as part of the IsaacLab repository.
+
+For tutorials on migrating to IsaacLab, please visit: https://isaac-sim.github.io/IsaacLab/source/migration/migrating_from_omniisaacgymenvs.html.
+
+Additions
+---------
+- Add `TargetFollowing` example with wheeled robot.
+- Add new inherited View classes from `omni.isaac.core` for performance benefits for `DeformableView`.
+- Add `extras` argument to Hydra for specifying additional kit arguments (e.g. `extras=[--reset-user]`).
+- Enable scene graph instancing flag in `SimConfig`.
+
+Changes
+-------
+- omni.isaac.core.utils.nucleus has been moved to omni.isaac.nucleus.
+- Increase GPU buffer dimensions for FrankaDeformable environment.
+- Use full `omni.isaac.sim.python.kit` app when running with viewer.
+- Remove deprecated `flush()` call in Factory environments.
+
+
+2023.1.1a - March 14, 2024
+--------------------------
+
+Fixes
+-----
+- Add workaround for nucleus hang issue on startup
+- Fix USD update flags being reset after creating new stage. This should fix the long hang when running the Humanoid environment with `headless=False`.
+
+Known Issues
+------------
+- A segmentation fault may occasionally occur at the end of a training run. This does not prevent the training from completing successfully.
+
+
+2023.1.1 - December 12, 2023
+----------------------------
+
+Additions
+---------
+- Add support for viewport recording during training/inferencing using gym wrapper class `RecordVideo`
+- Add `enable_recording`, `recording_interval`, `recording_length`, and `recording_fps`, `recording_dir` arguments to config/command-line for video recording
+- Add `moviepy` as dependency for video recording
+- Add video tutorial for extension workflow, available at [docs/framework/extension_workflow.md](docs/framework/extension_workflow.md)
+- Add camera clipping for CartpoleCamera to avoid seeing other environments in the background
+
+Changes
+-------
+- Use rl_device for sampling random policy (https://github.com/NVIDIA-Omniverse/OmniIsaacGymEnvs/pull/51)
+- Add FPS printouts for random policy
+- Use absolute path for default checkpoint folder for consistency between Python and extension workflows
+- Change camera creation API in CartpoleCamera to use USD APIs instead of `rep.create`
+
+Fixes
+-----
+- Fix missing device in warp kernel launch for Ant and Humanoid
+- Fix typo for velocity iteration (https://github.com/NVIDIA-Omniverse/OmniIsaacGymEnvs/pull/111)
+- Clean up private variable access in task classes in favour of property getters
+- Clean up private variable access in extension.py in favour of setter methods
+- Unregister replicator in extension workflow on training completion to allow for restart
+
+
 2023.1.0b - November 02, 2023
 -----------------------------
 

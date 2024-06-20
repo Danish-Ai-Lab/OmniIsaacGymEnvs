@@ -45,13 +45,13 @@ def import_tasks():
     from omniisaacgymenvs.tasks.ingenuity import IngenuityTask
     from omniisaacgymenvs.tasks.quadcopter import QuadcopterTask
     from omniisaacgymenvs.tasks.shadow_hand import ShadowHandTask
+    from omniisaacgymenvs.tasks.target_following import TargetFollowingTask
 
     from omniisaacgymenvs.tasks.warp.ant import AntLocomotionTask as AntLocomotionTaskWarp
     from omniisaacgymenvs.tasks.warp.cartpole import CartpoleTask as CartpoleTaskWarp
     from omniisaacgymenvs.tasks.warp.humanoid import HumanoidLocomotionTask as HumanoidLocomotionTaskWarp
     
     from omniisaacgymenvs.tasks.moonbot import MoonbotTask
-    from omniisaacgymenvs.tasks.moonbotsimple6 import Moonbotsimple6Task
 
     # Mappings from strings to environments
     task_map = {
@@ -75,7 +75,6 @@ def import_tasks():
         "ShadowHandOpenAI_FF": ShadowHandTask,
         "ShadowHandOpenAI_LSTM": ShadowHandTask,
         "Moonbot": MoonbotTask,
-        "Moonbotsimple6": Moonbotsimple6Task,
         
     }
 

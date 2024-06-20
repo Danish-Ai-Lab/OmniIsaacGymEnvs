@@ -54,13 +54,14 @@ class SimConfig:
             self._config["headless"] == True
             and not self._sim_params["enable_cameras"]
             and not self._config["enable_livestream"]
+            and not self._config.get("enable_recording", False)
         ):
             self._sim_params["use_fabric"] = False
             self._sim_params["enable_viewport"] = False
         else:
             self._sim_params["enable_viewport"] = True
             enable_extension("omni.kit.viewport.bundle")
-            if self._sim_params["enable_cameras"]:
+            if self._sim_params["enable_cameras"] or self._config.get("enable_recording", False):
                 enable_extension("omni.replicator.isaac")
 
         self._sim_params["warp"] = self._config["warp"]
@@ -76,6 +77,8 @@ class SimConfig:
         carb.settings.get_settings().set("/app/viewport/grid/enabled", False)
         # Disable framerate limiting which might cause rendering slowdowns
         carb.settings.get_settings().set("/app/runLoops/main/rateLimitEnabled", False)
+        # enable scene graph instancing
+        carb.settings.get_settings().set("/persistent/omnihydra/useSceneGraphInstancing", True)
 
         import omni.ui 
         # Dock floating UIs this might not be needed anymore as extensions dock themselves
@@ -92,6 +95,31 @@ class SimConfig:
         window = omni.ui.Workspace.get_window("Content")
         if window:
             window.visible = False
+        window = omni.ui.Workspace.get_window("Simulation Settings")
+        if window:
+            window.visible = False
+
+        # workaround for asset root search hang
+        carb.settings.get_settings().set_string(
+            "/persistent/isaac/asset_root/default",
+            "http://omniverse-content-production.s3-us-west-2.amazonaws.com/Assets/Isaac/4.0",
+        )
+        carb.settings.get_settings().set_string(
+            "/persistent/isaac/asset_root/nvidia",
+            "http://omniverse-content-production.s3-us-west-2.amazonaws.com/Assets/Isaac/4.0",
+        )
+
+        # make sure the correct USD update flags are set
+        if self._sim_params["use_fabric"]:
+            carb.settings.get_settings().set_bool("/physics/updateToUsd", False)
+            carb.settings.get_settings().set_bool("/physics/updateParticlesToUsd", False)
+            carb.settings.get_settings().set_bool("/physics/updateVelocitiesToUsd", False)
+            carb.settings.get_settings().set_bool("/physics/updateForceSensorsToUsd", False)
+            carb.settings.get_settings().set_bool("/physics/outputVelocitiesLocalSpace", False)
+            carb.settings.get_settings().set_bool("/physics/fabricUpdateTransformations", True)
+            carb.settings.get_settings().set_bool("/physics/fabricUpdateVelocities", False)
+            carb.settings.get_settings().set_bool("/physics/fabricUpdateForceSensors", False)
+            carb.settings.get_settings().set_bool("/physics/fabricUpdateJointStates", False)
 
     def _parse_config(self):
         # general sim parameter
@@ -353,7 +381,7 @@ class SimConfig:
         solver_velocity_iteration_count = arti_api.GetSolverVelocityIterationCountAttr()
         if value is None:
             value = self._get_actor_config_value(
-                name, "solver_velocity_iteration_count", solver_position_iteration_count
+                name, "solver_velocity_iteration_count", solver_velocity_iteration_count
             )
         if value != -1:
             solver_velocity_iteration_count.Set(value)
